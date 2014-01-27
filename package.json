@@ -1,0 +1,30 @@
+{
+  "name": "lucy",
+  "version": "0.0.0",
+  "main": "lib/lucy.js",
+  "description": "Mongo and sockets made easy and fun to use.",
+  "homepage": "https://github.com/pentateu/lucy",
+  "bugs": "https://github.com/pentateu/lucy/issues",
+  "author": {
+    "name": "Rafael Almeida",
+    "email": "rafael@iswe.co.nz",
+    "url": "https://github.com/pentateu/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pentateu/lucy"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.7.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.0",
+    "load-grunt-tasks": "~0.2.0",
+    "time-grunt": "~0.2.0",
+    "jshint-stylish": "~0.1.3"
+  }
+}
