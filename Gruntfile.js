@@ -75,4 +75,6 @@ module.exports = function (grunt) {
   // Default task.
   grunt.registerTask('default', ['jshint', 'copy', 'watch']);
 
+  grunt.registerTask('build', ['jshint']);
+
 };
