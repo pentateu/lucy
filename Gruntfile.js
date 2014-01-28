@@ -11,6 +11,7 @@ module.exports = function (grunt) {
     nodeunit: {
       files: ['test/**/*_test.js']
     },
+
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -26,6 +27,7 @@ module.exports = function (grunt) {
         src: ['test/**/*.js']
       }
     },
+
     watch: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
@@ -33,16 +35,44 @@ module.exports = function (grunt) {
       },
       lib: {
         files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib', 'nodeunit']
+        tasks: ['jshint:lib', 'nodeunit', 'copy:local']
       },
       test: {
         files: '<%= jshint.test.src %>',
         tasks: ['jshint:test', 'nodeunit']
       }
-    }
+    },
+
+    local: {
+      //where to do the locao deploy/build
+      path: '../poc/node_modules/lucy'
+    },
+
+    // Copies remaining files to places other tasks can use
+    copy: {
+      local: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '.',
+          dest: '<%= local.path %>',
+          src: ['{,*/}*.*', '**/{,*/}*.*']
+        }]
+      }
+    },
+
+    // Run some tasks in parallel to speed up the build process
+    /*concurrent: {
+      dev: [
+        ,
+        ,
+         
+      ]
+    },*/
+
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'nodeunit']);
+  grunt.registerTask('default', ['jshint', 'copy', 'watch']);
 
 };

@@ -23,14 +23,19 @@ var lucy = require('../lib/lucy.js');
 */
 
 exports.lucy = {
-  setUp: function(done) {
+  setUp: function (done) {
     // setup here
     done();
+
   },
-  'no args': function(test) {
+  'no args': function (test) {
     test.expect(1);
     // tests here
-    test.equal(lucy.awesome(), 'awesome', 'should be awesome.');
+    test.equal(lucy.mapCollection('test'), lucy, 'mapCollection should return lucy for chaining.');
+    
+    
+
+
     test.done();
   }
 };
