@@ -1,6 +1,7 @@
 'use strict';
 
-var lucy = require('../lib/lucy.js');
+var lucy = require('../lib/lucy.js'),
+    Q = require('Q');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -47,7 +48,7 @@ exports.lucy = {
 
     test.expect(1);
 
-    lucy.asPromise(objx, 'testfn');
+    lucy.util.asPromise(objx, 'testfn');
 
     objx.testfn(1, 1).then(function (total) {
 
@@ -70,7 +71,7 @@ exports.lucy = {
 
     test.expect(1);
 
-    lucy.asPromise(objx, 'testfnError');
+    lucy.util.asPromise(objx, 'testfnError');
 
     objx.testfnError(1, 1).then(function () {
 
@@ -82,6 +83,44 @@ exports.lucy = {
 
       test.equal(error, errorObj, 'correct error obj');
 
+      test.done();
+    });
+  },
+
+  'MongoDBService - add': function (test) {
+
+    var dbMock = {
+      mockid: 'zjaojsdsadajsd',
+      collection: function (collName) {
+        return {
+          name: collName,
+          insert: function (doc, callback) {
+            console.log('dbMock -> collection -> insert -> doc: ' + JSON.stringify(doc));
+            
+            doc.mockid = dbMock.mockid;
+
+            callback(null, doc);
+          }
+        };
+      }
+    },
+        dbPromise = Q(dbMock),
+        collection = new lucy.MongoDBService(dbPromise, 'testCollection'),
+        data = {name: 'my name'};
+
+    test.expect(3);
+
+    collection.add(data).then(function (inserted) {
+
+      test.ok(inserted !== null, 'inserted not null.');
+      test.ok(inserted.name === data.name, 'same payload');
+      test.ok(inserted.mockid === dbMock.mockid, 'id added to the inserted doc');
+
+      test.done();
+
+    },
+    function (error) {
+      test.ok(false, 'error should not occour -> error: ' + error);
       test.done();
     });
   }
