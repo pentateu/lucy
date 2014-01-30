@@ -106,14 +106,14 @@ exports.lucy = {
     },
         dbPromise = Q(dbMock),
         collection = new lucy.MongoDBService(dbPromise, 'testCollection'),
-        data = {name: 'my name'};
+        data = {doc: {name: 'my name'}};
 
     test.expect(3);
 
     collection.add(data).then(function (inserted) {
 
       test.ok(inserted !== null, 'inserted not null.');
-      test.ok(inserted.name === data.name, 'same payload');
+      test.ok(inserted.name === data.doc.name, 'same payload -> inserted: ' + JSON.stringify(inserted));
       test.ok(inserted.mockid === dbMock.mockid, 'id added to the inserted doc');
 
       test.done();
