@@ -1,13 +1,22 @@
 # lucy [![Build Status](https://secure.travis-ci.org/pentateu/lucy.png?branch=master)](http://travis-ci.org/pentateu/lucy)
 
-Mongo and sockets made easy and fun to use.
+MongoDB over sockets made easy and fun to use.
 
 ## Getting Started
-Install the module with: `npm install lucy`
+
+### Server
+Install the server side module with: `npm install lucy`
+
+### Client
+_(Coming soon)_
 
 ```javascript
-var lucy = require('lucy');
-lucy.awesome(); // "awesome"
+var io = require('socket.io').listen(8500),
+    lucy = require('lucy');
+
+lucy.mapCollection('person');
+
+lucy.start(io, 'mongodb://localhost/test');
 ```
 
 ## Documentation
