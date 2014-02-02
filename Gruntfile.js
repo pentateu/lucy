@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 
     local: {
       //where to do the locao deploy/build
-      path: '../poc/node_modules/lucy'
+      path: './sample/node_modules/lucy'
     },
 
     // Copies remaining files to places other tasks can use

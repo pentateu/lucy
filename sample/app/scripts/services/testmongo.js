@@ -22,17 +22,21 @@ angular.module('splitMyBillApp')
 
   .service('QueryCommand', function(persistenceSocket, $q, updateAngular) {
     
-    var QueryCommand = function(entity, args, list, scope) {
-      
-      args = Array.prototype.slice.call(args);
+    var QueryCommand = function(entity, list, scope) {
       
       var self = this;
       
-      self.args = {
-        query: args[0],
-        fields: args[1],
-        options: args[2]
+      
+      /*
+      self.setParameters = function (params) {
+        params = Array.prototype.slice.call(params);
+      
+        angular.extend(self.params.query, params[0] || {});
+        angular.extend(self.params.fields, params[1] || {});
+        angular.extend(self.params.options, params[2] || {});
+        angular.extend(self.params.sort, params[3] || {});
       };
+      */
       
       //fire the query
       self.fire = function() {
@@ -46,8 +50,17 @@ angular.module('splitMyBillApp')
           updateAngular(scope);
         }
         
+        var params = {
+          query: list.$query || {},
+          fields: list.$fields || {},
+          options: list.$options || {},
+          sort: {}
+        };
+        
+        angular.copy(list.$sort, params.sort);
+        
         //fire a request to the server to get the data
-        persistenceSocket.emit(entity.name + '::find', self.args, function (newList) {
+        persistenceSocket.emit(entity.name + '::find', params, function (newList) {
           if(list){
             list.length = 0;//clear the list
             angular.copy(newList, list);
@@ -116,9 +129,20 @@ angular.module('splitMyBillApp')
         
         list = list || [];
         
-        list.query = {};
+        //TODO Change this to a prototype
+        list.$query   = {};
+        list.$fields  = {};
+        list.$options = {};
+        list.$sort    = {
+          fire: function (sortParams) {
+            angular.extend(list.$sort, sortParams || {});
+            list.command.fire();
+          }
+        };
         
         list.notifyUpdate = notifyUpdate || noop;
+        
+        list.command = new QueryCommand(self, list);
         
         //map the events when this list will be updated
         list.updateOn = function () {
@@ -134,7 +158,7 @@ angular.module('splitMyBillApp')
           
           //add event
           if( events.indexOf('add') > -1 ) {
-            //when an instance is add ... add it to the list
+            //when an instance is added ... add it to the list
             persistenceSocket.on(name + ' add success', function(result){
               addItemsToList(result, list);
             });
@@ -144,7 +168,7 @@ angular.module('splitMyBillApp')
         };
         
         list.find = function() {
-          return new QueryCommand(self, arguments, list);
+          return list.command.fire();
         };
         
         return list;
